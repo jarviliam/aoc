@@ -47,7 +47,7 @@ int main() {
   for (auto i : lanes) {
     std::cout << i << std::endl;
   }
-  int getMeOuttaHere = howManyTreesDidThisGuyHit(lanes, 1, 1);
+  int getMeOuttaHere = howManyTreesDidThisGuyHit(lanes, 3, 1);
   int b = howManyTreesDidThisGuyHit(lanes, 3, 1);
   int c = howManyTreesDidThisGuyHit(lanes, 5, 1);
   int d = howManyTreesDidThisGuyHit(lanes, 7, 1);
