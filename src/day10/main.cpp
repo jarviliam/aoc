@@ -41,9 +41,40 @@ int part1(std::set<int> &instructions) {
   return answer;
 }
 
+/**
+ * Dynamic Programming
+ */
+long long int research(int i, const std::vector<int> &inst,
+             std::unordered_map<int, long long int> &storage) {
+  if (i == inst.size() - 1) {
+    return 1;
+  }
+  // If Value Exists in the storage, return it (memoized)
+  if (storage.find(i) != storage.end()) {
+    return storage[i];
+  }
+  long long int total = 0;
+  for (int j = i + 1; j < inst.size(); j++) {
+    // Valid Charge Diff
+    if (inst[j] - inst[i] <= 3) {
+      total += research(j, inst, storage);
+    }
+  };
+  storage[i] = total;
+  return total;
+};
+
 int main() {
   std::set<int> st;
   loadItSet(st);
   auto pt1 = part1(st);
   std::cout << pt1 << std::endl;
+  std::vector<int> pt2(st.begin(), st.end());
+  pt2.insert(pt2.begin(), 0);
+  pt2.emplace_back(pt2.back() + 3);
+  for(auto i : pt2){
+      std::cout<< i << std::endl;
+  }
+  std::unordered_map<int, long long int> memo;
+  std::cout << research(0, pt2, memo) << std::endl;
 };
