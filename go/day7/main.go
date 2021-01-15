@@ -79,25 +79,36 @@ func pt1(in []string) int {
 	}
 	var exists = struct{}{}
 
+    /*
+    * BFS
+    */
 	seen := make(map[string]struct{})
 	target := "shinygoldbag"
 	q := deque.New()
-	q.append(target)
+    //Append the Target
+	q.Append(target)
 	for {
-		if len(q) == 0 {
+        //Break when Empty
+		if q.Len() == 0 {
 			break
 		}
-		x := q.PopLeft()
-		fmt.Println(x)
-		if _, ok := seen[x]; ok {
+        //Get Left Value
+		x, _ := q.PopLeft()
+        //Convert Interface -> String
+		z := fmt.Sprintf("%v", x)
+
+        //If it Exists within our Seen Set. Skip itr
+		if _, ok := seen[z]; ok {
 			continue
 		}
-		seen[x] = exists
-		for _, y := range hold[x] {
-			q.append(y)
+        //Append
+		seen[z] = exists
+        //For
+		for _, y := range hold[z] {
+			q.Append(y)
 		}
 	}
-	fmt.Println(len(seen) - 1)
+	ans = len(seen) - 1
 	return ans
 }
 func pt2(in []string) int {
@@ -108,7 +119,7 @@ func pt2(in []string) int {
 
 func main() {
 
-	in, _ := reader("test.txt")
+	in, _ := reader("input.txt")
 	ans1 := pt1(in)
 	ans2 := pt2(in)
 	fmt.Println(ans1)
