@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+    "strconv"
 	"github.com/tebeka/deque"
 	"os"
 	"strings"
@@ -32,9 +33,16 @@ type node struct {
 * vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
 * faded blue bags contain no other bags.
  */
-func pt1(in []string) int {
+type Pair struct {
+	a int
+	b string
+}
+
+func solve(in []string) (int, int) {
 	ans := 0
+	ans2 := 0
 	hold := make(map[string][]string)
+	contents := make(map[string][]Pair)
 	for _, v := range in {
 		if v != "" {
 			words := strings.Fields(v)
@@ -60,68 +68,75 @@ func pt1(in []string) int {
 					if bag[len(bag)-1] == 's' {
 						bag = bag[:len(bag)-1]
 					}
+					num,_ := strconv.Atoi(string(bag[0]))
 					if bag[0] >= '0' && bag[0] <= '9' {
-						fmt.Println(bag, "to ", bag[1:])
 						bag = bag[1:]
 					}
+					contents[holder] = append(contents[holder], Pair{num, bag})
 					if _, ok := hold[bag]; !ok {
 						hold[bag] = []string{}
 					}
+
 					hold[bag] = append(hold[bag], holder)
-					//fmt.Println(bag)
 					idx += 4
 				}
 			}
 		}
 	}
-	for k, v := range hold {
-		fmt.Println(k, "value is ", v)
-	}
 	var exists = struct{}{}
 
-    /*
-    * BFS
-    */
+	/*
+	 * BFS
+	 */
 	seen := make(map[string]struct{})
 	target := "shinygoldbag"
 	q := deque.New()
-    //Append the Target
+	//Append the Target
 	q.Append(target)
 	for {
-        //Break when Empty
+		//Break when Empty
 		if q.Len() == 0 {
 			break
 		}
-        //Get Left Value
+		//Get Left Value
 		x, _ := q.PopLeft()
-        //Convert Interface -> String
+		//Convert Interface -> String
 		z := fmt.Sprintf("%v", x)
 
-        //If it Exists within our Seen Set. Skip itr
+		//If it Exists within our Seen Set. Skip itr
 		if _, ok := seen[z]; ok {
 			continue
 		}
-        //Append
+		//Append
 		seen[z] = exists
-        //For
+		//For
 		for _, y := range hold[z] {
 			q.Append(y)
 		}
 	}
 	ans = len(seen) - 1
-	return ans
+    for i,v := range contents{
+       fmt.Println(i, "Size ", len(v))
+       for _,c := range v {
+          fmt.Println("Contains ", c.a, " ", c.b)
+       }
+    }
+	ans2 = size(target,&contents) - 1
+	return ans, ans2
 }
-func pt2(in []string) int {
-	ans := 0
-
+//Recursive
+func size(bag string, contents *map[string][]Pair) int {
+	ans := 1
+	for _, v := range (*contents)[bag] {
+		ans += v.a * size(v.b, contents)
+	}
 	return ans
 }
 
 func main() {
 
 	in, _ := reader("input.txt")
-	ans1 := pt1(in)
-	ans2 := pt2(in)
+	ans1, ans2 := solve(in)
 	fmt.Println(ans1)
 	fmt.Println(ans2)
 }
